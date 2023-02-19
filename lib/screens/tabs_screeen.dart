@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/screens/categories_screen.dart';
 import 'package:meals_app/screens/favourites_screen.dart';
+import '../widgets/main_drawer.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -10,7 +11,11 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  final List<Widget> _pages = [CategoriesScreen(), FavouritesScreen()];
+  // final List<Widget> _pages = [CategoriesScreen(), FavouritesScreen()];
+  final List<Map<String, Object>> _pages = [
+    {'title': 'Categories', 'page': CategoriesScreen()},
+    {'title': 'Favourites', 'page': FavouritesScreen()}
+  ];
   int _selectedPageIndex = 0;
 
   void _selectPage(int index) {
@@ -24,18 +29,35 @@ class _TabScreenState extends State<TabScreen> {
     //*If you want the TabBar at the bottom of the screen
     return Scaffold(
       appBar: AppBar(
-        title: Text('DeliMeals'),
+        title: Text(_pages[_selectedPageIndex]['title'] as String),
       ),
-      body: _pages[_selectedPageIndex],
+      drawer: MainDrawer(),
+      body: _pages[_selectedPageIndex]['page']! as Widget,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
-        backgroundColor: Theme.of(context).primaryColor,
+
+        //*If you are using the type as shifting, then you have to
+        //*manually assign the background color to the items
+        //backgroundColor: Theme.of(context).primaryColor,
+
+        //* The one which is not selected should have the following color
+        unselectedItemColor: Colors.white,
+
+        //* The one which is not selected should have the following color
+        selectedItemColor: Theme.of(context).accentColor,
+
+        //*The app should know which one is selected
+        currentIndex: _selectedPageIndex,
+
+        type: BottomNavigationBarType.shifting,
         items: [
           BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
             icon: Icon(Icons.category),
             label: 'Categories',
           ),
           BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
             icon: Icon(Icons.star),
             label: 'Favourites',
           )
